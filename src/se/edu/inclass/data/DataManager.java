@@ -46,6 +46,7 @@ public class DataManager {
             System.out.println("empty file");
             throw new IOException();
         }
+        //typecasting into arraylist
         ArrayList<String> dataItems = (ArrayList) Files.readAllLines(dataFile.toPath(), Charset.defaultCharset());
 
         return dataItems;
@@ -57,7 +58,7 @@ public class DataManager {
             ArrayList<String> dataItems = readFile();
             taskList = parse(dataItems);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("cannot create file; reason: " + e.getMessage());
         }
         return taskList;
     }
