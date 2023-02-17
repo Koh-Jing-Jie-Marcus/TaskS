@@ -5,7 +5,10 @@ import se.edu.inclass.task.Deadline;
 import se.edu.inclass.task.Task;
 import se.edu.inclass.task.TaskNameComparator;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+
+import static java.util.stream.Collectors.toList;
 
 public class Main {
 
@@ -16,6 +19,12 @@ public class Main {
         DataManager dm = new DataManager("./data/data.txt");
         ArrayList<Task> tasksData = dm.loadData();
 
+        //printData(tasksData);
+        System.out.println();
+        System.out.println("Printing deadlines before sorting");
+        printDeadlines(tasksData);
+
+        System.out.println("Total number of deadlines: " + countDeadlines(tasksData));
         System.out.println();
 //        System.out.println("Printing deadlines");
 //        printDeadlines(tasksData);
@@ -24,6 +33,13 @@ public class Main {
 //        printData(tasksData);
         printDataUsingStreams(tasksData);
         System.out.println("Total number of deadlines counted using streams: " + countDeadlines(tasksData));
+
+        System.out.println("Printing deadlines after sorting");
+        printDeadlinesUsingStream(tasksData);
+
+        ArrayList<Task> filteredList = filterTaskListUsingStreams(tasksData, "11");
+        System.out.println("filtered list of tasks:");
+        printData(filteredList);
 
     }
 
@@ -71,7 +87,15 @@ public class Main {
     public static void printDeadlinesUsingStream(ArrayList<Task> tasks) {
         System.out.println("printing deadlines using streams");
         tasks.stream()
-                .filter(t -> t instanceof Deadline) //filter takes a predicate
+                .filter(t -> t instanceof Deadline)
+                .sorted((a, b) -> a.getDescription().compareToIgnoreCase(b.getDescription()))
                 .forEach(System.out::println);
+    }
+
+    public static ArrayList<Task> filterTaskListUsingStreams(ArrayList<Task> tasks, String filterString) {
+        ArrayList<Task> filteredList = (ArrayList<Task>) tasks.stream()
+                .filter(t -> t.getDescription().contains(filterString))
+                .collect(toList());
+        return filteredList;
     }
 }
